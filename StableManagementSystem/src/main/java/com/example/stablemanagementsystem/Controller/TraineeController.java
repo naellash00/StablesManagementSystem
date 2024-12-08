@@ -1,17 +1,14 @@
 package com.example.stablemanagementsystem.Controller;
 
 import com.example.stablemanagementsystem.ApiResponse.ApiResponse;
+import com.example.stablemanagementsystem.Model.RidingClass;
 import com.example.stablemanagementsystem.Model.Trainee;
-import com.example.stablemanagementsystem.Repository.TraineeRepository;
 import com.example.stablemanagementsystem.Service.TraineeService;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -76,5 +73,17 @@ public class TraineeController {
     public ResponseEntity renewSubscription(@PathVariable Integer traineeid, @PathVariable String type){
         traineeService.renewSubscription(traineeid, type);
         return ResponseEntity.status(200).body(new ApiResponse("Your Subscription Is Renewed Successfully"));
+    }
+
+    @GetMapping("/get/trainee/history/{traineeid}")
+    public ResponseEntity  getTraineeClassHistory(@PathVariable Integer traineeid){
+        List<RidingClass> traineeClasses = traineeService.getTraineeClassHistory(traineeid);
+        return ResponseEntity.status(200).body(traineeClasses);
+    }
+
+    @GetMapping("/find/available/classes/by/date/{date}")
+    public ResponseEntity getAvailableClassesByDate(@PathVariable LocalDateTime date){
+        List<RidingClass> availableClasses = traineeService.getAvailableClasses(date);
+        return ResponseEntity.status(200).body(availableClasses);
     }
 }

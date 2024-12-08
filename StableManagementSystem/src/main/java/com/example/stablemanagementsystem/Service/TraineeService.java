@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -101,6 +102,64 @@ public class TraineeService {
         return false;
     }
 
+//    public void bookClass(Integer traineeID, LocalDateTime date) {
+//        Trainee trainee = traineeRepository.findTraineeById(traineeID);
+//        if (trainee == null) {
+//            throw new ApiException("Trainee ID Not Found");
+//        }
+//        if (!isSubscribed(traineeID)) {
+//            throw new ApiException("Trainee IS Not Subscribed");
+//        }
+//        if (trainee.getNumberOfRemainingClasses() == 0) {
+//            throw new ApiException("No Available Classes For This Trainee");
+//        }
+//        if (!ridingClassService.isAvailableDate(date)) {
+//            throw new ApiException("This Date Is Unavailable");
+//        }
+//
+//        // create new class and assign values
+//        RidingClass ridingClass = ridingClassRepository.findByDate(date);
+//        if (ridingClass == null) { // if its new date -> creat new object
+//            ridingClass = new RidingClass();
+//            ridingClass.setDate(date);
+//            ridingClass.setNumberoftrainees(0); // Start with 0 trainees
+//        }
+//        if (ridingClass.getNumberoftrainees() >= 6) {
+//            throw new ApiException("This Class Is Full");
+//        }
+//        // increment trainee count if not full
+//        ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
+//        if (!ridingClass.getTraineeIds().contains(traineeID)) {
+//            ridingClass.getTraineeIds().add(traineeID);
+//            ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
+//        } else {
+//            throw new ApiException("Trainee is already booked for this class");
+//        }
+//        //ridingClass.getTraineeIds().add(traineeID);
+//        // to check if they trainee booked calss
+//        // isBooked(traineeID, date);
+//        // assign coach and horse
+//        Integer assignedCoachID = ridingClassService.assignedCoach();
+//        Integer assignedHorseID = ridingClassService.assignedHorse();
+//        // ridingClass.setTraineeid(trainee.getId());
+//        ridingClass.setDate(date);
+//        if (assignedCoachID != null) {
+//            //  ridingClass.setCoachid(assignedCoachID);
+//            ridingClass.setNumberofcoaches(ridingClass.getNumberofcoaches() + 1);
+//        } else {
+//            throw new ApiException("No Available Coach");
+//        }
+//        if (assignedHorseID != null) {
+//            //  ridingClass.setHorseid(assignedHorseID);
+//            ridingClass.setNumberOfHorses(ridingClass.getNumberOfHorses() + 1);
+//        } else {
+//            throw new ApiException("No Available Horse");
+//        }
+//        ridingClassRepository.save(ridingClass);
+//        trainee.setNumberOfRemainingClasses(trainee.getNumberOfRemainingClasses() - 1);
+//        traineeRepository.save(trainee);
+//    }
+
     public void bookClass(Integer traineeID, LocalDateTime date) {
         Trainee trainee = traineeRepository.findTraineeById(traineeID);
         if (trainee == null) {
@@ -116,9 +175,9 @@ public class TraineeService {
             throw new ApiException("This Date Is Unavailable");
         }
 
-        // create new class and assign values
+
         RidingClass ridingClass = ridingClassRepository.findByDate(date);
-        if (ridingClass == null) { // if its new date -> creat new object
+        if (ridingClass == null) {
             ridingClass = new RidingClass();
             ridingClass.setDate(date);
             ridingClass.setNumberoftrainees(0); // Start with 0 trainees
@@ -126,31 +185,35 @@ public class TraineeService {
         if (ridingClass.getNumberoftrainees() >= 6) {
             throw new ApiException("This Class Is Full");
         }
-        // increment trainee count if not full
-        ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
-        // to check if they trainee booked calss
-        // isBooked(traineeID, date);
-        // assign coach and horse
+
+        // chekc if trainee booked and add to id list
+        if (!ridingClass.getTraineeIds().contains(traineeID)) {
+            ridingClass.getTraineeIds().add(traineeID);
+            ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
+        } else {
+            throw new ApiException("Trainee is already booked for this class");
+        }
+
+        // automatic assign coach and horse
         Integer assignedCoachID = ridingClassService.assignedCoach();
         Integer assignedHorseID = ridingClassService.assignedHorse();
-        // ridingClass.setTraineeid(trainee.getId());
-        ridingClass.setDate(date);
         if (assignedCoachID != null) {
-            //  ridingClass.setCoachid(assignedCoachID);
             ridingClass.setNumberofcoaches(ridingClass.getNumberofcoaches() + 1);
         } else {
             throw new ApiException("No Available Coach");
         }
         if (assignedHorseID != null) {
-            //  ridingClass.setHorseid(assignedHorseID);
             ridingClass.setNumberOfHorses(ridingClass.getNumberOfHorses() + 1);
         } else {
             throw new ApiException("No Available Horse");
         }
+
+        // Save updated class and trainee
         ridingClassRepository.save(ridingClass);
         trainee.setNumberOfRemainingClasses(trainee.getNumberOfRemainingClasses() - 1);
         traineeRepository.save(trainee);
     }
+
 
     public Boolean isBooked(Integer traineeID, LocalDateTime date) {
         RidingClass ridingClass = ridingClassRepository.findByDate(date);
@@ -178,7 +241,7 @@ public class TraineeService {
         ridingClassRepository.save(ridingClass);
     }
 
-    public void renewSubscription(Integer traineeID, String type){
+    public void renewSubscription(Integer traineeID, String type) {
         Trainee trainee = traineeRepository.findTraineeById(traineeID);
         //check trainee id
         if (trainee == null) {
@@ -197,9 +260,9 @@ public class TraineeService {
                 if (existingSubscription != null) {
                     subscriptionService.deleteSubscription(existingSubscription.getId());
                 }
-               // if their balance is enough, then set the new subscription data
+                // if their balance is enough, then set the new subscription data
                 // update their balance
-                trainee.setBalance(trainee.getBalance()-price);
+                trainee.setBalance(trainee.getBalance() - price);
                 trainee.setNumberOfRemainingClasses(subscriptionService.getNumberOfClassesByType(type));
                 Subscription newSubscription = subscriptionService.setSubscriptionDetailsBasedOnType(type);
                 newSubscription.setTraineeid(trainee.getId());
@@ -211,5 +274,35 @@ public class TraineeService {
             }
         }
 
+    }
+
+    public List<RidingClass> getTraineeClassHistory(Integer traineeID) {
+        // all the classes
+        List<RidingClass> allClasses = ridingClassRepository.findAll();
+        // the trainee classes intially
+        List<RidingClass> traineeClasses = new ArrayList<>();
+
+        for (RidingClass ridingClass : allClasses) {
+            if (ridingClass.getTraineeIds().contains(traineeID)) {
+                traineeClasses.add(ridingClass);
+            }
+        }
+
+        return traineeClasses;
+    }
+
+    public List<RidingClass> getAvailableClasses(LocalDateTime date) {
+        List<RidingClass> availableClasses = new ArrayList<>();
+        //find claases with the date
+        List<RidingClass> allClasses = ridingClassRepository.findAll();
+
+        for (RidingClass ridingClass : allClasses) {
+            if (ridingClass.getDate().equals(date)
+                    && ridingClass.getNumberoftrainees() < 6) { //  if class is not full
+                availableClasses.add(ridingClass);
+            }
+        }
+
+        return availableClasses;
     }
 }

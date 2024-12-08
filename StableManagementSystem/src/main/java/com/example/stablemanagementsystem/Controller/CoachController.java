@@ -35,8 +35,8 @@ public class CoachController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity updateCoach(@PathVariable Integer id, @RequestBody @Valid Coach coach, Errors errors){
-        if(errors.hasErrors()){
+    public ResponseEntity updateCoach(@PathVariable Integer id, @RequestBody @Valid Coach coach, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
         }
         coachService.updateCoach(id, coach);
@@ -44,9 +44,15 @@ public class CoachController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteCoach(@PathVariable Integer id){
+    public ResponseEntity deleteCoach(@PathVariable Integer id) {
         coachService.deleteCoach(id);
         return ResponseEntity.status(200).body(new ApiResponse("Coach Deleted Successfully"));
+    }
+
+    @PutMapping("/accept/request/{serviceName}")
+    public ResponseEntity acceptGroomingRequest(@PathVariable String serviceName) {
+        coachService.acceptGroomingRequest(serviceName);
+        return ResponseEntity.status(200).body(new ApiResponse("Request Accepted Successfully"));
     }
 }
 

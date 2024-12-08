@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -40,4 +42,7 @@ public class RidingClass {
     private Integer numberoftrainees=0;
     private Integer numberofcoaches=0;
     private Integer numberOfHorses=0;
+
+    @ElementCollection
+    private List<Integer> traineeIds = new ArrayList<>();
 }
