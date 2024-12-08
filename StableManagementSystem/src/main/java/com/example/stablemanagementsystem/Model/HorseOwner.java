@@ -31,7 +31,7 @@ public class HorseOwner {
     @Column(columnDefinition = "varchar(30) not null unique")
     private String email;
 
-    @Positive(message = "Balance Cannot Be Negative")
+    //@Positive(message = "Balance Cannot Be Negative")
     private Integer balance;
 
 }

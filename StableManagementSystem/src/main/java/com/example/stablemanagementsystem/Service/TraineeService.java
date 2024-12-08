@@ -129,7 +129,7 @@ public class TraineeService {
         // increment trainee count if not full
         ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
         // to check if they trainee booked calss
-       // isBooked(traineeID, date);
+        // isBooked(traineeID, date);
         // assign coach and horse
         Integer assignedCoachID = ridingClassService.assignedCoach();
         Integer assignedHorseID = ridingClassService.assignedHorse();
@@ -178,5 +178,38 @@ public class TraineeService {
         ridingClassRepository.save(ridingClass);
     }
 
-   
+    public void renewSubscription(Integer traineeID, String type){
+        Trainee trainee = traineeRepository.findTraineeById(traineeID);
+        //check trainee id
+        if (trainee == null) {
+            throw new ApiException("Trainee ID Not Found");
+        }
+        //check if trainee subscription is ended
+        if (trainee.getNumberOfRemainingClasses() > 0) {
+            throw new ApiException("You Cant Renew. Your Subscription Didnt End.");
+        }
+        // and is their subscription really ended they can renew it
+        if (trainee.getNumberOfRemainingClasses() == 0) {
+            // check their balance
+            Integer price = subscriptionService.getPriceByType(type);
+            if (trainee.getBalance() >= price) {
+                Subscription existingSubscription = subscriptionService.getSubscriptionByTraineeId(traineeID);
+                if (existingSubscription != null) {
+                    subscriptionService.deleteSubscription(existingSubscription.getId());
+                }
+               // if their balance is enough, then set the new subscription data
+                // update their balance
+                trainee.setBalance(trainee.getBalance()-price);
+                trainee.setNumberOfRemainingClasses(subscriptionService.getNumberOfClassesByType(type));
+                Subscription newSubscription = subscriptionService.setSubscriptionDetailsBasedOnType(type);
+                newSubscription.setTraineeid(trainee.getId());
+                traineeRepository.save(trainee);
+                subscriptionService.addSubscription(newSubscription);
+
+            } else {
+                throw new ApiException("Your Balance Not Enough");
+            }
+        }
+
+    }
 }

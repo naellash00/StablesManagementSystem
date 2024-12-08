@@ -20,8 +20,8 @@ public class Stable {
     @Column(columnDefinition = "int not null")
     private Integer numberOfRooms;
 
-    private Integer numberOfHorses=0;
-    private Integer numberOfCoaches=0;
-    private Integer numberOfTrainees=0;
+//    private Integer numberOfHorses=0;
+//    private Integer numberOfCoaches=0;
+//    private Integer numberOfTrainees=0;
 
 }

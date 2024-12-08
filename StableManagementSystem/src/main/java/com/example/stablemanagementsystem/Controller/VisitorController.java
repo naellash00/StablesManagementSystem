@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -61,5 +62,12 @@ public class VisitorController {
     public ResponseEntity getAllFreeRides(){
         List<FreeRide> ride = freeRideService.getAllFreeRides();
         return ResponseEntity.status(200).body(ride);
+    }
+
+
+    @PutMapping("{senderid}/send/gift/to/{receiverusername}/{duration}/{type}")
+    public ResponseEntity sendFreeRideGift(@PathVariable Integer senderid, @PathVariable String receiverusername, @PathVariable Integer duration, @PathVariable String type){
+        visitorService.sendFreeRideGift(senderid, receiverusername, duration, type);
+        return ResponseEntity.status(200).body(new ApiResponse("Free Ride Gift Sent Successfully"));
     }
 }

@@ -71,4 +71,10 @@ public class TraineeController {
         traineeService.cancelClass(traineeid, date);
         return ResponseEntity.status(200).body(new ApiResponse("Class Is Canceled Successfully"));
     }
+
+    @PutMapping("/renew/{traineeid}/{type}")
+    public ResponseEntity renewSubscription(@PathVariable Integer traineeid, @PathVariable String type){
+        traineeService.renewSubscription(traineeid, type);
+        return ResponseEntity.status(200).body(new ApiResponse("Your Subscription Is Renewed Successfully"));
+    }
 }

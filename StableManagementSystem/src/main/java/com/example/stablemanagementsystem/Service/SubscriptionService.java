@@ -89,6 +89,9 @@ public class SubscriptionService {
         }
         return subscription;
     }
+    public Subscription getSubscriptionByTraineeId(Integer traineeID){
+        return subscriptionRepository.getSubscriptionByTraineeId(traineeID);
+    }
 
 
 }
