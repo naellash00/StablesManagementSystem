@@ -1,5 +1,6 @@
 package com.example.stablemanagementsystem.Service;
 
+import com.example.stablemanagementsystem.ApiResponse.ApiException;
 import com.example.stablemanagementsystem.Model.Coach;
 import com.example.stablemanagementsystem.Model.Horse;
 import com.example.stablemanagementsystem.Model.RidingClass;
@@ -23,34 +24,27 @@ public class RidingClassService {
         this.coachService = coachService;
     }
 
-    List<Trainee> classTrainees;
-    List<Coach> classCoaches;
-    List<Horse> classHorses;
 
     public List<RidingClass> getClassesInformation() {
         return ridingClassRepository.findAll();
     }
-
-
-    public Boolean isAvailableDate(LocalDateTime date) {
-        if (ridingClassRepository.getNumberOfTraineesByClassDate(date) == null ||
-                ridingClassRepository.getNumberOfTraineesByClassDate(date) < 6) {
-            // class is not full
-//            for (RidingClass ridingClass : ridingClassRepository.findAll()) {
-//                if (ridingClass.getDate().equals(date)) {
-//                    return false;
-//                }
-//            }
-            // Check if a class already exists at the given date
-            if (ridingClassRepository.existsByDate(date)) {
-                return false;
-            }
-
+    public RidingClass getClassByDate(LocalDateTime date){
+        RidingClass ridingClass = ridingClassRepository.findByDate(date);
+        if(ridingClass==null){
+            throw new ApiException("No Class In This Date");
         }
-        return true;
+        return ridingClass;
     }
 
-    public  Integer assignedCoach() {
+
+    // because of the qurey that deals with unique this makes only 2 trainees have same date
+    public Boolean isAvailableDate(LocalDateTime date) {
+        RidingClass ridingClass = ridingClassRepository.findByDate(date);
+        return ridingClass == null || ridingClass.getNumberoftrainees() < 6;//
+    }
+
+
+    public Integer assignedCoach() {
         for (Coach coach : coachService.getAllCoaches()) {
             // check is this coach status is available
             if (coach.getStatus().equalsIgnoreCase("available")) {

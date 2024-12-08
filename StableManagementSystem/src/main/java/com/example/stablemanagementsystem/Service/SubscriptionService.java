@@ -55,6 +55,19 @@ public class SubscriptionService {
         return price;
     }
 
+    public Integer getNumberOfClassesByType(String type) {
+        Integer numberOfClasses = 0;
+        if (type.equalsIgnoreCase("riding")) {
+            numberOfClasses = 12;
+        } else if (type.equalsIgnoreCase("pegging")) {
+            numberOfClasses = 10;
+        } else if (type.equalsIgnoreCase("jumping")) {
+            numberOfClasses = 6;
+        }
+        return numberOfClasses;
+    }
+
+
     public Subscription setSubscriptionDetailsBasedOnType(String type) {
         Subscription subscription = new Subscription();
         if (type.equalsIgnoreCase("riding")) {
