@@ -54,4 +54,10 @@ public class HorseOwnerController {
         horseOwnerService.requestHorseShelter(horseownerid, duration, shelterhorse);
         return ResponseEntity.status(200).body(new ApiResponse("Shelter Request Completed Successfully"));
     }
+
+    @PutMapping("/request/room/change/{horseownerid}/{shelterhorseid}")
+    public ResponseEntity requestRoomChange(@PathVariable Integer horseownerid, @PathVariable Integer shelterhorseid){
+        horseOwnerService.requestRoomChange(horseownerid, shelterhorseid);
+        return ResponseEntity.status(200).body(new ApiResponse("Room Request Is Changed Successfully"));
+    }
 }

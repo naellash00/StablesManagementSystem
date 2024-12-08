@@ -64,4 +64,6 @@ public class RidingClassService {
         }
         return null; // no available horse
     }
+
+
 }

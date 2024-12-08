@@ -49,38 +49,59 @@ public class HorseOwnerService {
         horseOwnerRepository.delete(horseOwner);
     }
 
-    public void requestHorseShelter(Integer horseOwnerID, Integer duration, ShelterHorse shelterHorse){
+    public void requestHorseShelter(Integer horseOwnerID, Integer duration, ShelterHorse shelterHorse) {
         // first chekc valid owner id
         HorseOwner horseOwner = horseOwnerRepository.findHorseOwnerById(horseOwnerID);
-        if(horseOwner==null){
+        if (horseOwner == null) {
             throw new ApiException("Invalid Horse Owner ID");
         }
         Stable stable = stableRepository.findById(1).get();
-        if(stable==null){
+        if (stable == null) {
             throw new ApiException("Stable Not Found");
         }
-        if(stable.getNumberOfRooms()==0){
-            throw new ApiException("No Available Stalls");
+        if (stable.getNumberOfRooms() == 0) {
+            throw new ApiException("No Available Rooms");
         }
         // check horse breed -? will be checkend in rquest body?
         // make calculation for the price based on duration
         Integer price = shelterHorseService.getShelterPriceBasedOnBreed(shelterHorse.getBreed()) * duration;
         // check owner balance
-        if(horseOwner.getBalance()>= price){
-            horseOwner.setBalance(horseOwner.getBalance()-price);
+        if (horseOwner.getBalance() >= price) {
+            horseOwner.setBalance(horseOwner.getBalance() - price);
             // set owner id
             shelterHorse.setOwnerID(horseOwnerID);
             // set automatic room number
             shelterHorse.setRoomNumber(shelterHorseService.assignAvailableRoom(stable));
             //decrement number of rooms
-            stable.setNumberOfRooms(stable.getNumberOfRooms()-1);
+            stable.setNumberOfRooms(stable.getNumberOfRooms() - 1);
             //save changes
             stableRepository.save(stable);
             shelterHorseRepository.save(shelterHorse);
             horseOwnerRepository.save(horseOwner);
-        }
-        else {
+        } else {
             throw new ApiException("Balance Not Enough For Shelter Request And Duration");
         }
+    }
+
+    public void requestRoomChange(Integer horseOwnerID, Integer shelterHorseID) {
+        // check owner and their horse id if exist
+        HorseOwner horseOwner = horseOwnerRepository.findHorseOwnerById(horseOwnerID);
+        ShelterHorse shelterHorse = shelterHorseRepository.findShelterHorseById(shelterHorseID);
+
+        if (horseOwner == null) {
+            throw new ApiException("Horse Owner ID Not Found");
+        }
+        if (shelterHorse == null) {
+            throw new ApiException("Shelter Horse ID Not Found");
+        }
+        Stable stable = stableRepository.findById(1).get();
+        if (stable == null) {
+            throw new ApiException("Stable Not Found");
+        }
+        if (stable.getNumberOfRooms() == 0) {
+            throw new ApiException("No Available Rooms");
+        }
+        shelterHorse.setRoomNumber(shelterHorseService.assignAvailableRoom(stable));
+        shelterHorseRepository.save(shelterHorse);
     }
 }

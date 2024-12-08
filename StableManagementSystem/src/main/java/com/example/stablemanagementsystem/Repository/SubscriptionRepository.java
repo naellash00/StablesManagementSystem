@@ -11,4 +11,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Inte
 
 //    @Query("select p from Subscription p where p.type = ?1")
 //    Integer getPriceByType(String type);
+    @Query("select s from Subscription s where s.traineeid =?1")
+    Subscription getSubscriptionByTraineeId(Integer traineeID);
 }
