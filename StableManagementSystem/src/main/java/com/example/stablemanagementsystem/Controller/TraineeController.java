@@ -6,6 +6,7 @@ import com.example.stablemanagementsystem.Repository.TraineeRepository;
 import com.example.stablemanagementsystem.Service.TraineeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +51,7 @@ public class TraineeController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteTrainee(@PathVariable Integer id) {
         traineeService.deleteTrainee(id);
-        return ResponseEntity.status(200).body(new ApiResponse("Trainee Updated Successfully"));
+        return ResponseEntity.status(200).body(new ApiResponse("Trainee Deleted Successfully"));
     }
 
     @PostMapping("/subscribe/{traineeid}/{type}")
@@ -63,5 +64,11 @@ public class TraineeController {
     public ResponseEntity bookClass(@PathVariable Integer traineeid, @PathVariable LocalDateTime date) {
         traineeService.bookClass(traineeid, date);
         return ResponseEntity.status(200).body(new ApiResponse("Class Is Booked Successfully"));
+    }
+
+    @PutMapping("/cancel/{traineeid}/{date}")
+    public ResponseEntity cancelClass(@PathVariable Integer traineeid, @PathVariable LocalDateTime date){
+        traineeService.cancelClass(traineeid, date);
+        return ResponseEntity.status(200).body(new ApiResponse("Class Is Canceled Successfully"));
     }
 }

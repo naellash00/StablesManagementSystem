@@ -101,48 +101,6 @@ public class TraineeService {
         return false;
     }
 
-    //    public void bookClass(Integer traineeID, LocalDateTime date) {
-//        for (Trainee trainee : getAllTrainees()) {
-//            // check trainee id and subscription
-//            if (trainee.getId().equals(traineeID) && isSubscribed(traineeID)) {
-//                //****check if trainee already booked this class before***
-//                // check if date is available
-//                if (ridingClassService.isAvailableDate(date)) {
-//                    // then make new riding class object
-//                    RidingClass ridingClass1 = new RidingClass();
-//                    ridingClass1.setTraineeid(trainee.getId());
-//                    ridingClass1.setDate(date);
-//
-//                    Integer assignedCoachID = ridingClassService.assignedCoach();
-//                    Integer assignedHorseID = ridingClassService.assignedHorse();
-//
-//                    if (assignedCoachID != null) {
-//                        ridingClass1.setCoachid(assignedCoachID);
-//                        ridingClass1.setNumberofcoaches(ridingClass1.getNumberofcoaches() + 1);
-//
-//                    } else {
-//                        throw new ApiException("No Available Coach For This Class");
-//                    }
-//                    if (assignedHorseID != null) {
-//                        ridingClass1.setHorseid(assignedHorseID);
-//                        ridingClass1.setNumberOfHorses(ridingClass1.getNumberOfHorses() + 1);
-//                    } else {
-//                        throw new ApiException("No Available Coach For This Class");
-//                    }
-//                    // increase number of trainees
-//                    ridingClass1.setNumberoftrainees(ridingClass1.getNumberoftrainees() + 1);
-//                    ridingClassRepository.save(ridingClass1);
-//                    //decrement this trainee number of classes
-//                    trainee.setNumberOfRemainingClasses(trainee.getNumberOfRemainingClasses() - 1);
-//
-//                } else {
-//                    throw new ApiException("Incorrect Booking. Date Is Unavailable");
-//                }
-//
-//            }
-//        }
-//
-//    }
     public void bookClass(Integer traineeID, LocalDateTime date) {
         Trainee trainee = traineeRepository.findTraineeById(traineeID);
         if (trainee == null) {
@@ -165,25 +123,26 @@ public class TraineeService {
             ridingClass.setDate(date);
             ridingClass.setNumberoftrainees(0); // Start with 0 trainees
         }
-        if(ridingClass.getNumberoftrainees() >= 6){
+        if (ridingClass.getNumberoftrainees() >= 6) {
             throw new ApiException("This Class Is Full");
         }
         // increment trainee count if not full
         ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() + 1);
-
+        // to check if they trainee booked calss
+       // isBooked(traineeID, date);
         // assign coach and horse
         Integer assignedCoachID = ridingClassService.assignedCoach();
         Integer assignedHorseID = ridingClassService.assignedHorse();
-       // ridingClass.setTraineeid(trainee.getId());
+        // ridingClass.setTraineeid(trainee.getId());
         ridingClass.setDate(date);
         if (assignedCoachID != null) {
-          //  ridingClass.setCoachid(assignedCoachID);
+            //  ridingClass.setCoachid(assignedCoachID);
             ridingClass.setNumberofcoaches(ridingClass.getNumberofcoaches() + 1);
         } else {
             throw new ApiException("No Available Coach");
         }
         if (assignedHorseID != null) {
-          //  ridingClass.setHorseid(assignedHorseID);
+            //  ridingClass.setHorseid(assignedHorseID);
             ridingClass.setNumberOfHorses(ridingClass.getNumberOfHorses() + 1);
         } else {
             throw new ApiException("No Available Horse");
@@ -193,4 +152,31 @@ public class TraineeService {
         traineeRepository.save(trainee);
     }
 
+    public Boolean isBooked(Integer traineeID, LocalDateTime date) {
+        RidingClass ridingClass = ridingClassRepository.findByDate(date);
+        if (ridingClass == null) {
+            throw new ApiException("No Class In This Date"); // no class exists for this date
+        }
+        // If the class exists
+        return ridingClass.getNumberoftrainees() > 0; // manually entering the trainee
+    }
+
+    public void cancelClass(Integer traineeID, LocalDateTime date) {
+        // to cancel class 1. check valid trainee id 2. check they already booked the class 3. check the time is before the class in 2 hourse
+        Trainee trainee = traineeRepository.findTraineeById(traineeID);
+        if (trainee == null) {
+            throw new ApiException("Trainee ID Not Found");
+        }
+        RidingClass ridingClass = ridingClassRepository.findByDate(date);
+        if (ridingClass == null) {
+            throw new ApiException("No Class Found In This Date");
+        }
+        // reduce numbers in class
+        ridingClass.setNumberoftrainees(ridingClass.getNumberoftrainees() - 1);
+        ridingClass.setNumberofcoaches(ridingClass.getNumberofcoaches() - 1);
+        ridingClass.setNumberOfHorses(ridingClass.getNumberOfHorses() - 1);
+        ridingClassRepository.save(ridingClass);
+    }
+
+   
 }
