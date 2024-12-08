@@ -1,16 +1,14 @@
 package com.example.stablemanagementsystem.Service;
 
 import com.example.stablemanagementsystem.ApiResponse.ApiException;
-import com.example.stablemanagementsystem.Model.Coach;
-import com.example.stablemanagementsystem.Model.HorseOwner;
-import com.example.stablemanagementsystem.Model.ShelterHorse;
-import com.example.stablemanagementsystem.Model.Stable;
+import com.example.stablemanagementsystem.Model.*;
 import com.example.stablemanagementsystem.Repository.HorseOwnerRepository;
 import com.example.stablemanagementsystem.Repository.ShelterHorseRepository;
 import com.example.stablemanagementsystem.Repository.StableRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,6 +18,7 @@ public class HorseOwnerService {
     private final ShelterHorseService shelterHorseService;
     private final StableRepository stableRepository;
     private final ShelterHorseRepository shelterHorseRepository;
+    private final GroomingRequestService groomingRequestService;
 
     public List<HorseOwner> getAllHorseOwners() {
         return horseOwnerRepository.findAll();
@@ -103,5 +102,21 @@ public class HorseOwnerService {
         }
         shelterHorse.setRoomNumber(shelterHorseService.assignAvailableRoom(stable));
         shelterHorseRepository.save(shelterHorse);
+    }
+
+    public List<GroomingRequest> requestGroomingService(Integer horseOwnerId, GroomingRequest request) {
+        // check valid owner id
+        HorseOwner horseOwner = horseOwnerRepository.findHorseOwnerById(horseOwnerId);
+        if (horseOwner == null) {
+            throw new ApiException("Horse Owner ID Not Found");
+        }
+        // creat the request
+        GroomingRequest groomingRequest = new GroomingRequest();
+        groomingRequest.setServiceName(request.getServiceName());
+        groomingRequest.setIsAccepted(false); // Default value
+
+        // n save it
+        groomingRequestService.addGroomingRequest(groomingRequest);
+        return groomingRequestService.getGroomingRequests();
     }
 }

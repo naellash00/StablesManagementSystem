@@ -2,6 +2,7 @@ package com.example.stablemanagementsystem.Controller;
 
 import com.example.stablemanagementsystem.ApiResponse.ApiResponse;
 import com.example.stablemanagementsystem.Model.Coach;
+import com.example.stablemanagementsystem.Model.GroomingRequest;
 import com.example.stablemanagementsystem.Model.HorseOwner;
 import com.example.stablemanagementsystem.Model.ShelterHorse;
 import com.example.stablemanagementsystem.Service.HorseOwnerService;
@@ -59,5 +60,14 @@ public class HorseOwnerController {
     public ResponseEntity requestRoomChange(@PathVariable Integer horseownerid, @PathVariable Integer shelterhorseid){
         horseOwnerService.requestRoomChange(horseownerid, shelterhorseid);
         return ResponseEntity.status(200).body(new ApiResponse("Room Request Is Changed Successfully"));
+    }
+
+    @PostMapping("/request/service/{horseOwnerId}")
+    public ResponseEntity requestGroomingService(@PathVariable Integer horseOwnerId, @RequestBody @Valid GroomingRequest request, Errors errors){
+        if (errors.hasErrors()) {
+            return ResponseEntity.status(400).body(errors.getFieldError().getDefaultMessage());
+        }
+        List<GroomingRequest> groomingRequests = horseOwnerService.requestGroomingService(horseOwnerId, request);
+        return ResponseEntity.status(200).body(groomingRequests);
     }
 }
