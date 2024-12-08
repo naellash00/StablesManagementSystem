@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -17,9 +18,14 @@ import java.util.List;
 public class RidingClassController {
     private final RidingClassService ridingClassService;
 
-    @GetMapping("/get")
+    @GetMapping("/get/classes")
     public ResponseEntity getClassesInformation() {
         List<RidingClass> classes = ridingClassService.getClassesInformation();
         return ResponseEntity.status(200).body(classes);
+    }
+    @GetMapping("/get-class/by-date/{date}")
+    public ResponseEntity getClassByDate(@PathVariable LocalDateTime date){
+        RidingClass ridingClass = ridingClassService.getClassByDate(date);
+        return ResponseEntity.status(200).body(ridingClass);
     }
 }

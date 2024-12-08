@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RidingClassRepository extends JpaRepository<RidingClass, Integer> {
@@ -17,4 +18,9 @@ public interface RidingClassRepository extends JpaRepository<RidingClass, Intege
 
     @Query("select sum(t.numberoftrainees) from RidingClass t WHERE t.date = ?1")
     Integer getNumberOfTraineesByClassDate(LocalDateTime date);
+
+    @Query("select r from RidingClass r where r.date = ?1")
+    RidingClass findByDate(LocalDateTime date);
+
+
 }

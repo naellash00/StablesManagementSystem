@@ -25,6 +25,7 @@ public class RidingClass {
     @NotNull(message = "Class Date Cannot Be Empty")
     @FutureOrPresent
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(nullable = false, unique = true)
     private LocalDateTime date;
 
     private String day;
@@ -35,12 +36,6 @@ public class RidingClass {
             this.day = date.getDayOfWeek().toString();
         }
     }
-    @Column(columnDefinition = "int unique")
-    private Integer traineeid;
-    @Column(columnDefinition = "int unique")
-    private Integer coachid;
-    @Column(columnDefinition = "int unique")
-    private Integer horseid;
 
     private Integer numberoftrainees=0;
     private Integer numberofcoaches=0;
