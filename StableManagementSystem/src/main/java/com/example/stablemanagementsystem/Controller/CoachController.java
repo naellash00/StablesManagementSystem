@@ -49,9 +49,10 @@ public class CoachController {
         return ResponseEntity.status(200).body(new ApiResponse("Coach Deleted Successfully"));
     }
 
-    @PutMapping("/accept/request/{serviceName}")
-    public ResponseEntity acceptGroomingRequest(@PathVariable String serviceName) {
-        coachService.acceptGroomingRequest(serviceName);
+    @PutMapping("/accept/request/{id}/{serviceName}")
+    public ResponseEntity acceptGroomingRequest(@PathVariable Integer id,@PathVariable String serviceName) {
+        //coachService.acceptGroomingRequest(serviceName);
+        coachService.acceptGroomingRequest(id, serviceName);
         return ResponseEntity.status(200).body(new ApiResponse("Request Accepted Successfully"));
     }
 }

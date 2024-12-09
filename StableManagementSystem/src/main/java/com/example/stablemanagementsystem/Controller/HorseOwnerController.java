@@ -70,7 +70,7 @@ public class HorseOwnerController {
         return ResponseEntity.status(200).body(groomingRequests);
     }
 
-    @GetMapping("/get/accpted/requests/{horseOwnerId}")
+    @GetMapping("/get/accepted/requests/{horseOwnerId}")
     public ResponseEntity getAllAcceptedGroomingRequestsByOwner(@PathVariable Integer horseOwnerId) {
         List<GroomingRequest> acceptedRequests = horseOwnerService.getAllAcceptedGroomingRequestsByOwner(horseOwnerId);
         return ResponseEntity.status(200).body(acceptedRequests);

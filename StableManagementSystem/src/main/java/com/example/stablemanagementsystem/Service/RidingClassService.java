@@ -65,19 +65,4 @@ public class RidingClassService {
         }
         return null; // no available horse
     }
-    //**
-//    public List<RidingClass> getCompletedClassesInDay(LocalDate date) {
-//        List<RidingClass> allClasses = ridingClassRepository.findAll();
-//        List<RidingClass> completedClasses = new ArrayList<>();
-//
-//        for (RidingClass ridingClass : allClasses) {
-//            if (ridingClass.getDate().toLocalDate().equals(date)) {
-//                completedClasses.add(ridingClass);
-//            }
-//        }
-//
-//        return completedClasses;
-//    }
-
-
 }

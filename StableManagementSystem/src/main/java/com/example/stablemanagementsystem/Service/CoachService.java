@@ -46,9 +46,11 @@ public class CoachService {
         coachRepository.delete(coach);
     }
 
-    public void acceptGroomingRequest(String serviceName) {
+    public void acceptGroomingRequest(Integer horseOwnerId, String serviceName) {
         for (GroomingRequest request : groomingRequestService.getGroomingRequests()) {
-            if (request.getServiceName().equals(serviceName) && !request.getIsAccepted()) {
+            if (request.getServiceName().equals(serviceName) &&
+                    request.getHorseOwnerId().equals(horseOwnerId) &&
+                    !request.getIsAccepted()) {
                 request.setIsAccepted(true);
                 return;
             }

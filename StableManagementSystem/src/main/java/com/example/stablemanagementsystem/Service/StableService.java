@@ -5,6 +5,8 @@ import com.example.stablemanagementsystem.Repository.StableRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class StableService {

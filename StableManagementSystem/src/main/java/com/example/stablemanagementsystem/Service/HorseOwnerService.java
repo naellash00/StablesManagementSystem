@@ -111,24 +111,26 @@ public class HorseOwnerService {
             throw new ApiException("Horse Owner ID Not Found");
         }
         // creat the request
-        GroomingRequest groomingRequest = new GroomingRequest();
-        groomingRequest.setServiceName(request.getServiceName());
-        groomingRequest.setIsAccepted(false); // Default value
+//        GroomingRequest groomingRequest = new GroomingRequest();
+//        groomingRequest.setServiceName(request.getServiceName());
+//        groomingRequest.setIsAccepted(false); // Default value
+        request.setHorseOwnerId(horseOwnerId); // Set owner ID
+        request.setIsAccepted(false);         // Default to not accepted
+        groomingRequestService.addGroomingRequest(request);
 
         // n save it
-        groomingRequestService.addGroomingRequest(groomingRequest);
+//        groomingRequestService.addGroomingRequest(groomingRequest);
+//        return groomingRequestService.getGroomingRequests();
         return groomingRequestService.getGroomingRequests();
     }
 
     public List<GroomingRequest> getAllAcceptedGroomingRequestsByOwner(Integer horseOwnerId) {
         List<GroomingRequest> acceptedRequests = new ArrayList<>();
-
         for (GroomingRequest request : groomingRequestService.getGroomingRequests()) {
-            if (request.getIsAccepted() && request.getHorseOwnerId().equals(horseOwnerId)) {
+            if (request.getIsAccepted() && horseOwnerId.equals(request.getHorseOwnerId())) {
                 acceptedRequests.add(request);
             }
         }
-
         return acceptedRequests;
     }
 
