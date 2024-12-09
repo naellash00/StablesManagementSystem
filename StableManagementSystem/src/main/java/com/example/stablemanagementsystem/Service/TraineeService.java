@@ -305,4 +305,51 @@ public class TraineeService {
 
         return availableClasses;
     }
+
+    //**
+    public void rescheduleClass(Integer traineeID, LocalDateTime oldDate, LocalDateTime newDate) {
+        Trainee trainee = traineeRepository.findTraineeById(traineeID);
+        if (trainee == null) {
+            throw new ApiException("Trainee ID Not Found");
+        }
+
+        RidingClass oldRidingClass = ridingClassRepository.findByDate(oldDate);
+        if (oldRidingClass == null || !oldRidingClass.getTraineeIds().contains(traineeID)) {
+            throw new ApiException("No Class Found On The Given Old Date");
+        }
+
+        RidingClass newRidingClass = ridingClassRepository.findByDate(newDate);
+        if (newRidingClass != null && newRidingClass.getNumberoftrainees() >= 6) {
+            throw new ApiException("New Date Class is Full");
+        }
+
+        // deltw the trainee from the old class
+        oldRidingClass.getTraineeIds().remove(traineeID);
+        oldRidingClass.setNumberoftrainees(oldRidingClass.getNumberoftrainees() - 1);
+        ridingClassRepository.save(oldRidingClass);
+
+        // add  trainee to  new  class
+        if (newRidingClass == null) {
+            newRidingClass = new RidingClass();
+            newRidingClass.setDate(newDate);
+            newRidingClass.setNumberoftrainees(0);
+        }
+        newRidingClass.getTraineeIds().add(traineeID);
+        newRidingClass.setNumberoftrainees(newRidingClass.getNumberoftrainees() + 1);
+        ridingClassRepository.save(newRidingClass);
+    }
+
+    public List<RidingClass> getCompletedClassesInDay(LocalDate date) {
+        List<RidingClass> allClasses = ridingClassRepository.findAll();
+        List<RidingClass> completedClasses = new ArrayList<>();
+
+        for (RidingClass ridingClass : allClasses) {
+            if (ridingClass.getDate().toLocalDate().equals(date)) {
+                completedClasses.add(ridingClass);
+            }
+        }
+
+        return completedClasses;
+    }
+
 }

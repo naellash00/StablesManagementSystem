@@ -17,4 +17,19 @@ public class GroomingRequestService {
     public void addGroomingRequest(GroomingRequest request) {
         groomingRequests.add(request);
     }
+
+    //
+    public List<GroomingRequest> getAllAcceptedGroomingRequests(Integer horseOwnerId) {
+        List<GroomingRequest> acceptedRequests = new ArrayList<>();
+
+        for (GroomingRequest request : getGroomingRequests()) {
+            if (request.getIsAccepted()) {
+                request.setHorseOwnerId(horseOwnerId);
+                acceptedRequests.add(request);
+            }
+        }
+
+        return acceptedRequests;
+    }
+
 }

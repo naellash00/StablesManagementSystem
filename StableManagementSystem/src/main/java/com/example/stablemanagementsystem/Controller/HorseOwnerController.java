@@ -1,7 +1,6 @@
 package com.example.stablemanagementsystem.Controller;
 
 import com.example.stablemanagementsystem.ApiResponse.ApiResponse;
-import com.example.stablemanagementsystem.Model.Coach;
 import com.example.stablemanagementsystem.Model.GroomingRequest;
 import com.example.stablemanagementsystem.Model.HorseOwner;
 import com.example.stablemanagementsystem.Model.ShelterHorse;
@@ -69,5 +68,11 @@ public class HorseOwnerController {
         }
         List<GroomingRequest> groomingRequests = horseOwnerService.requestGroomingService(horseOwnerId, request);
         return ResponseEntity.status(200).body(groomingRequests);
+    }
+
+    @GetMapping("/get/accpted/requests/{horseOwnerId}")
+    public ResponseEntity getAllAcceptedGroomingRequestsByOwner(@PathVariable Integer horseOwnerId) {
+        List<GroomingRequest> acceptedRequests = horseOwnerService.getAllAcceptedGroomingRequestsByOwner(horseOwnerId);
+        return ResponseEntity.status(200).body(acceptedRequests);
     }
 }

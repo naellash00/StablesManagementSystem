@@ -64,26 +64,38 @@ public class TraineeController {
     }
 
     @PutMapping("/cancel/{traineeid}/{date}")
-    public ResponseEntity cancelClass(@PathVariable Integer traineeid, @PathVariable LocalDateTime date){
+    public ResponseEntity cancelClass(@PathVariable Integer traineeid, @PathVariable LocalDateTime date) {
         traineeService.cancelClass(traineeid, date);
         return ResponseEntity.status(200).body(new ApiResponse("Class Is Canceled Successfully"));
     }
 
     @PutMapping("/renew/{traineeid}/{type}")
-    public ResponseEntity renewSubscription(@PathVariable Integer traineeid, @PathVariable String type){
+    public ResponseEntity renewSubscription(@PathVariable Integer traineeid, @PathVariable String type) {
         traineeService.renewSubscription(traineeid, type);
         return ResponseEntity.status(200).body(new ApiResponse("Your Subscription Is Renewed Successfully"));
     }
 
     @GetMapping("/get/trainee/history/{traineeid}")
-    public ResponseEntity  getTraineeClassHistory(@PathVariable Integer traineeid){
+    public ResponseEntity getTraineeClassHistory(@PathVariable Integer traineeid) {
         List<RidingClass> traineeClasses = traineeService.getTraineeClassHistory(traineeid);
         return ResponseEntity.status(200).body(traineeClasses);
     }
 
     @GetMapping("/find/available/classes/by/date/{date}")
-    public ResponseEntity getAvailableClassesByDate(@PathVariable LocalDateTime date){
+    public ResponseEntity getAvailableClassesByDate(@PathVariable LocalDateTime date) {
         List<RidingClass> availableClasses = traineeService.getAvailableClasses(date);
         return ResponseEntity.status(200).body(availableClasses);
+    }
+
+    @PutMapping("/reschedule-class/{traineeid}/{oldDate}/{newDate}")
+    public ResponseEntity rescheduleClass(@PathVariable Integer traineeid, @PathVariable LocalDateTime oldDate, @PathVariable LocalDateTime newDate) {
+        traineeService.rescheduleClass(traineeid, oldDate, newDate);
+        return ResponseEntity.status(200).body(new ApiResponse("Class Rescheduled Successfully"));
+    }
+
+    @GetMapping("/completed-classes/{date}")
+    public ResponseEntity getCompletedClassesInDay(@PathVariable LocalDateTime date) {
+        List<RidingClass> completedClasses = traineeService.getCompletedClassesInDay(date.toLocalDate());
+        return ResponseEntity.status(200).body(completedClasses);
     }
 }

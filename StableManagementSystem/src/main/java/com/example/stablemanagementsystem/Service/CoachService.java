@@ -17,8 +17,6 @@ public class CoachService {
     private final CoachRepository coachRepository;
     private final GroomingRequestService groomingRequestService;
 
-
-
     public List<Coach> getAllCoaches() {
         return coachRepository.findAll();
     }

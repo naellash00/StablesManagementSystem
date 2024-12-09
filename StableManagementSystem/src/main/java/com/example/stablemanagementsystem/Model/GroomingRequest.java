@@ -14,4 +14,6 @@ public class GroomingRequest {
     @Pattern(regexp = "^(full service|bath service|hoof service)$", message = "enter available service: full service-bath service-hoof service")
     private String serviceName;
     private Boolean isAccepted = false;
+    private Integer horseOwnerId; //  horse owner id
+
 }
