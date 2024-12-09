@@ -119,4 +119,18 @@ public class HorseOwnerService {
         groomingRequestService.addGroomingRequest(groomingRequest);
         return groomingRequestService.getGroomingRequests();
     }
+
+    public List<GroomingRequest> getAllAcceptedGroomingRequestsByOwner(Integer horseOwnerId) {
+        List<GroomingRequest> acceptedRequests = new ArrayList<>();
+
+        for (GroomingRequest request : groomingRequestService.getGroomingRequests()) {
+            if (request.getIsAccepted() && request.getHorseOwnerId().equals(horseOwnerId)) {
+                acceptedRequests.add(request);
+            }
+        }
+
+        return acceptedRequests;
+    }
+
+
 }
